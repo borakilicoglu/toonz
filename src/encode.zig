@@ -326,11 +326,41 @@ fn Encoder(comptime Writer: type) type {
             switch (value) {
                 .null => try self.writer.writeAll("null"),
                 .bool => |v| try self.writer.writeAll(if (v) "true" else "false"),
-                .integer => |v| try self.writer.print("{d}", .{v}),
-                .float => |v| try self.writer.print("{d}", .{v}),
-                .number_string => |v| try self.writer.writeAll(v),
+                .integer => |v| try self.writeCanonicalInteger(v),
+                .float => |v| try self.writeCanonicalFloat(v),
+                .number_string => |v| try self.writeCanonicalNumberString(v),
                 .string => |v| try self.writeStringToken(v, delimiter, false),
                 else => return ToonError.UnsupportedFeature,
+            }
+        }
+
+        fn writeCanonicalInteger(self: *@This(), value: i64) !void {
+            try self.writer.print("{d}", .{value});
+        }
+
+        fn writeCanonicalFloat(self: *@This(), value: f64) !void {
+            if (value == 0) {
+                try self.writer.writeAll("0");
+                return;
+            }
+
+            const truncated = @trunc(value);
+            const min_i64_f: f64 = @floatFromInt(std.math.minInt(i64));
+            const max_i64_f: f64 = @floatFromInt(std.math.maxInt(i64));
+            if (truncated == value and truncated >= min_i64_f and truncated <= max_i64_f) {
+                try self.writer.print("{d}", .{@as(i64, @intFromFloat(truncated))});
+                return;
+            }
+
+            try self.writer.print("{d}", .{value});
+        }
+
+        fn writeCanonicalNumberString(self: *@This(), raw: []const u8) !void {
+            if (std.fmt.parseFloat(f64, raw)) |value| {
+                try self.writeCanonicalFloat(value);
+                return;
+            } else |_| {
+                try self.writer.writeAll(raw);
             }
         }
 
