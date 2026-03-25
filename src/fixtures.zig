@@ -133,6 +133,68 @@ test "official fixtures subset" {
         },
     );
 
+    try runEncodeFixtureFile(
+        allocator,
+        try fixturePath(allocator, fixture_root, "encode/delimiters.json"),
+        &.{
+            "encodes primitive arrays with tab delimiter",
+            "encodes primitive arrays with pipe delimiter",
+            "encodes primitive arrays with comma delimiter",
+            "encodes tabular arrays with tab delimiter",
+            "encodes tabular arrays with pipe delimiter",
+            "encodes nested arrays with tab delimiter",
+            "encodes nested arrays with pipe delimiter",
+            "encodes root-level array with tab delimiter",
+            "encodes root-level array with pipe delimiter",
+            "encodes root-level array of objects with tab delimiter",
+            "encodes root-level array of objects with pipe delimiter",
+            "quotes strings containing tab delimiter",
+            "quotes strings containing pipe delimiter",
+            "does not quote commas with tab delimiter",
+            "does not quote commas with pipe delimiter",
+            "quotes tabular values containing comma delimiter",
+            "does not quote commas in tabular values with tab delimiter",
+            "does not quote commas in object values with pipe delimiter",
+            "does not quote commas in object values with tab delimiter",
+            "quotes nested array values containing pipe delimiter",
+            "quotes nested array values containing tab delimiter",
+            "preserves ambiguity quoting regardless of delimiter",
+        },
+    );
+
+    try runEncodeFixtureFile(
+        allocator,
+        try fixturePath(allocator, fixture_root, "encode/whitespace.json"),
+        &.{
+            "produces no trailing newline at end of output",
+            "maintains proper indentation for nested structures",
+            "respects custom indent size option",
+        },
+    );
+
+    try runEncodeFixtureFile(
+        allocator,
+        try fixturePath(allocator, fixture_root, "encode/arrays-objects.json"),
+        &.{
+            "uses list format for objects with different fields",
+            "uses list format for objects with nested values",
+            "preserves field order in list items - array first",
+            "preserves field order in list items - primitive first",
+            "uses list format for objects containing arrays of arrays",
+            "uses tabular format for nested uniform object arrays",
+            "uses list format for nested object arrays with mismatched keys",
+            "uses list format for objects with multiple array fields",
+            "uses list format for objects with only array fields",
+            "encodes objects with empty arrays in list format",
+            "uses canonical encoding for multi-field list-item objects with tabular arrays",
+            "uses canonical encoding for single-field list-item tabular arrays",
+            "places empty arrays on hyphen line when first",
+            "encodes empty object list items as bare hyphen",
+            "uses field order from first object for tabular headers",
+            "uses list format when one object has nested field",
+        },
+    );
+
     try runDecodeFixtureFile(
         allocator,
         try fixturePath(allocator, fixture_root, "decode/primitives.json"),
@@ -147,6 +209,28 @@ test "official fixtures subset" {
             "parses null",
             "respects ambiguity quoting for true",
             "respects ambiguity quoting for integer",
+        },
+    );
+
+    try runDecodeFixtureFile(
+        allocator,
+        try fixturePath(allocator, fixture_root, "decode/arrays-primitive.json"),
+        &.{
+            "parses string arrays inline",
+            "parses number arrays inline",
+            "parses mixed primitive arrays inline",
+            "parses empty arrays",
+            "parses single-item array with empty string",
+            "parses multi-item array with empty string",
+            "parses whitespace-only strings in arrays",
+            "parses strings with delimiters in arrays",
+            "parses strings that look like primitives when quoted",
+            "parses strings with structural tokens in arrays",
+            "parses quoted key with inline array",
+            "parses quoted empty string key with inline array",
+            "parses quoted key containing brackets with inline array",
+            "parses quoted key with empty array",
+            "parses quoted empty string key with empty array",
         },
     );
 

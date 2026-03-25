@@ -85,13 +85,14 @@ fn Encoder(comptime Writer: type) type {
             level: usize,
             inline_after_dash: bool,
         ) anyerror!void {
+            const child_level_increment: usize = if (inline_after_dash and key != null) 2 else 1;
             if (!inline_after_dash) {
                 try self.writeIndent(level);
             }
             if (key) |k| try self.writeKey(k);
 
             if (isUniformScalarObjectArray(items)) {
-                try self.writeTabularArray(items, level);
+                try self.writeTabularArray(items, level, child_level_increment);
                 return;
             }
 
@@ -115,7 +116,7 @@ fn Encoder(comptime Writer: type) type {
 
             for (items, 0..) |item, index| {
                 if (index != 0) try self.writer.writeByte('\n');
-                try self.writeListItem(item, level + 1);
+                try self.writeListItem(item, level + child_level_increment);
             }
         }
 
@@ -259,14 +260,19 @@ fn Encoder(comptime Writer: type) type {
             }
         }
 
-        fn writeTabularArray(self: *@This(), items: []const std.json.Value, level: usize) !void {
+        fn writeTabularArray(
+            self: *@This(),
+            items: []const std.json.Value,
+            level: usize,
+            row_level_increment: usize,
+        ) !void {
             const first_obj = items[0].object;
             try self.writeInlineArrayHeader(items.len, first_obj);
             try self.writer.writeByte('\n');
 
             for (items, 0..) |item, row_index| {
                 if (row_index != 0) try self.writer.writeByte('\n');
-                try self.writeIndent(level + 1);
+                try self.writeIndent(level + row_level_increment);
 
                 var field_it = first_obj.iterator();
                 var first = true;

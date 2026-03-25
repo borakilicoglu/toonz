@@ -491,14 +491,14 @@ const Parser = struct {
 };
 
 fn maybeParseArrayHeader(allocator: std.mem.Allocator, lhs: []const u8) !?ArrayHeader {
-    const bracket = std.mem.indexOfScalar(u8, lhs, '[') orelse return null;
-    const close = std.mem.indexOfScalarPos(u8, lhs, bracket + 1, ']') orelse return null;
+    const bracket = findTopLevelScalar(lhs, '[') orelse return null;
+    const close = findTopLevelScalarPos(lhs, bracket + 1, ']') orelse return null;
 
     const key_part = std.mem.trim(u8, lhs[0..bracket], " ");
     const bracket_inner = std.mem.trim(u8, lhs[bracket + 1 .. close], " ");
     const after = std.mem.trim(u8, lhs[close + 1 ..], " ");
 
-    if (std.mem.indexOfScalarPos(u8, lhs, close + 1, '[') != null) return null;
+    if (findTopLevelScalarPos(lhs, close + 1, '[') != null) return null;
 
     var delimiter: u8 = ',';
     var len_slice = bracket_inner;
@@ -525,6 +525,35 @@ fn maybeParseArrayHeader(allocator: std.mem.Allocator, lhs: []const u8) !?ArrayH
         .delimiter = delimiter,
         .fields = fields,
     };
+}
+
+fn findTopLevelScalar(text: []const u8, needle: u8) ?usize {
+    return findTopLevelScalarPos(text, 0, needle);
+}
+
+fn findTopLevelScalarPos(text: []const u8, start: usize, needle: u8) ?usize {
+    var in_quotes = false;
+    var escaped = false;
+    var i = start;
+
+    while (i < text.len) : (i += 1) {
+        const ch = text[i];
+        if (escaped) {
+            escaped = false;
+            continue;
+        }
+        if (in_quotes and ch == '\\') {
+            escaped = true;
+            continue;
+        }
+        if (ch == '"') {
+            in_quotes = !in_quotes;
+            continue;
+        }
+        if (!in_quotes and ch == needle) return i;
+    }
+
+    return null;
 }
 
 const ParsedKey = struct {
