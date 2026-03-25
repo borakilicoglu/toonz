@@ -85,6 +85,15 @@ users[2]{id,name}:
   2,Bob
 ```
 
+## API Matrix
+
+| Function | Input | Output | Notes |
+|----------|-------|--------|-------|
+| `encodeAlloc` | `std.json.Value` | TOON text | Encoder options include delimiter, indentation, trailing newline, and key folding |
+| `decodeAlloc` | TOON text | `std.json.Value` | Decoder options include strict validation and path expansion |
+| `transcodeJsonToToonAlloc` | JSON text | TOON text | Parses JSON, then encodes TOON |
+| `transcodeToonToJsonAlloc` | TOON text | JSON text | Decodes TOON, then serializes JSON |
+
 ## Usage
 
 Encode a `std.json.Value` into TOON:
