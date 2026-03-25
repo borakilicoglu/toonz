@@ -171,12 +171,6 @@ const output = try toonz.transcodeToonToJsonAlloc(
 std.debug.print("{s}\n", .{output});
 ```
 
-## Sponsor
-
-If this project is useful to your work, consider sponsoring its development:
-
-- `https://github.com/sponsors/borakillcoglu`
-
 ## Contributing
 
 Contribution and commit rules live in `CONTRIBUTING.md`.
