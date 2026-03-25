@@ -1,6 +1,6 @@
-# toonz
-
 ![TOON](https://raw.githubusercontent.com/toon-format/toon/main/.github/og.png)
+
+# toonz
 
 Zig implementation of TOON (Token-Oriented Object Notation).
 
@@ -152,10 +152,16 @@ const output = try toonz.transcodeToonToJsonAlloc(
 std.debug.print("{s}\n", .{output});
 ```
 
-## CI
+## Sponsor
 
-GitHub Actions runs `zig build test` on every push to `main` and on pull requests.
+If this project is useful to your work, consider sponsoring its development:
+
+- `https://github.com/sponsors/borakillcoglu`
 
 ## Contributing
 
 Contribution and commit rules live in `CONTRIBUTING.md`.
+
+## Credit
+
+TOON was created by [Johann Schopplich](https://johannschopplich.com/).

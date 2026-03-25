@@ -40,6 +40,15 @@ Examples:
 - `docs`
 - `chore`
 
+Type meanings:
+
+- `feat`: new user-facing behavior or API
+- `fix`: bug fix or conformance fix
+- `refactor`: internal change without intended behavior change
+- `test`: fixture, test, or verification-only change
+- `docs`: README, contributing guide, or other documentation-only change
+- `chore`: repository maintenance, tooling, CI, or housekeeping
+
 ## Scope Guidance
 
 Prefer a real subsystem name:
@@ -59,6 +68,38 @@ Prefer a real subsystem name:
 - One logical change per commit when practical.
 - If a change is fixture-driven, mention the feature slice, not every file touched.
 - Do not use vague messages like `update`, `changes`, `wip`, or `fix stuff`.
+- Prefer `feat:` and `fix:` for implementation work, `docs:` for README/guide changes, and `chore:` for repo maintenance.
+- If a change mixes unrelated concerns, split it into separate commits instead of hiding everything under one message.
+
+## Pull Requests
+
+- Keep PRs focused on one feature slice, bug fix, or documentation topic.
+- Explain which spec section or fixture category the change targets.
+- Mention any fixture files added or expanded in `src/fixtures.zig`.
+- Include the exact validation command you ran:
+
+```sh
+zig build test
+```
+
+- Update `README.md` if the public API or supported behavior changed.
+- Avoid opening PRs with `WIP` titles. Open smaller reviewable PRs instead.
+
+## Suggested PR Template
+
+Use this structure in the PR body:
+
+```text
+## Summary
+- what changed
+
+## Spec / Fixtures
+- relevant spec section
+- relevant fixture category
+
+## Validation
+- zig build test
+```
 
 ## Implementation Priorities
 
@@ -78,12 +119,3 @@ zig build test
 ```
 
 If you add support for a new upstream fixture category, wire it into `src/fixtures.zig` in the same change when possible.
-
-## Continuity
-
-If context is lost, read:
-
-- `AGENTS.md`
-- `README.md`
-- `src/fixtures.zig`
-
