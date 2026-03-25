@@ -33,12 +33,6 @@ The project is no longer a bootstrap stub. It currently supports a substantial T
 - Reference implementation: `https://github.com/toon-format/toon/tree/main/packages/toon`
 - Initial seed doc reviewed for this project: `https://toonformat.dev/ecosystem/implementations.html`
 
-Observed upstream spec metadata during implementation:
-
-- Version: `3.0`
-- Status: `Working Draft`
-- Date: `2025-11-24`
-
 ## Main Files
 
 - `src/lib.zig`: public API
