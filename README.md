@@ -69,6 +69,22 @@ const toonz = b.dependency("toonz", .{
 exe.root_module.addImport("toonz", toonz.module("toonz"));
 ```
 
+## Example
+
+**JSON**
+
+```json
+{"users":[{"id":1,"name":"Ada"},{"id":2,"name":"Bob"}]}
+```
+
+**TOON**
+
+```toon
+users[2]{id,name}:
+  1,Ada
+  2,Bob
+```
+
 ## Usage
 
 Encode a `std.json.Value` into TOON:
