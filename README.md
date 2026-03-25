@@ -28,10 +28,10 @@ The project is no longer a bootstrap stub. It currently supports a substantial T
 
 ## Reference Sources
 
-- Spec: `https://github.com/toon-format/spec/blob/main/SPEC.md`
-- Conformance tests: `https://github.com/toon-format/spec/tree/main/tests`
-- Reference implementation: `https://github.com/toon-format/toon/tree/main/packages/toon`
-- Initial seed doc reviewed for this project: `https://toonformat.dev/ecosystem/implementations.html`
+- Spec: [SPEC.md](https://github.com/toon-format/spec/blob/main/SPEC.md)
+- Conformance tests: [tests](https://github.com/toon-format/spec/tree/main/tests)
+- Reference implementation: [toon package](https://github.com/toon-format/toon/tree/main/packages/toon)
+- Initial seed doc reviewed for this project: [Implementations](https://toonformat.dev/ecosystem/implementations.html)
 
 ## Main Files
 
