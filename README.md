@@ -53,6 +53,10 @@ Observed upstream spec metadata during implementation:
 zig build test
 ```
 
+## CI
+
+GitHub Actions runs `zig build test` on every push to `main` and on pull requests.
+
 ## Contributing
 
 Contribution and commit rules live in `CONTRIBUTING.md`.
