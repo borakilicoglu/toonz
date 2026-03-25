@@ -18,10 +18,17 @@ const TestCase = struct {
 
 test "official fixtures subset" {
     const allocator = std.testing.allocator;
+    const fixture_root = try resolveFixtureRoot(allocator);
+    defer allocator.free(fixture_root);
+
+    if (!(try fixtureRootExists(fixture_root))) {
+        std.debug.print("skipping official fixtures subset; fixture root not found: {s}\n", .{fixture_root});
+        return;
+    }
 
     try runEncodeFixtureFile(
         allocator,
-        "/tmp/toon-spec/tests/fixtures/encode/primitives.json",
+        try fixturePath(allocator, fixture_root, "encode/primitives.json"),
         &.{
             "encodes safe strings without quotes",
             "quotes empty string",
@@ -43,7 +50,7 @@ test "official fixtures subset" {
 
     try runEncodeFixtureFile(
         allocator,
-        "/tmp/toon-spec/tests/fixtures/encode/arrays-primitive.json",
+        try fixturePath(allocator, fixture_root, "encode/arrays-primitive.json"),
         &.{
             "encodes string arrays inline",
             "encodes number arrays inline",
@@ -58,7 +65,7 @@ test "official fixtures subset" {
 
     try runEncodeFixtureFile(
         allocator,
-        "/tmp/toon-spec/tests/fixtures/encode/objects.json",
+        try fixturePath(allocator, fixture_root, "encode/objects.json"),
         &.{
             "encodes null values in objects",
             "encodes empty objects as empty string",
@@ -75,7 +82,7 @@ test "official fixtures subset" {
 
     try runEncodeFixtureFile(
         allocator,
-        "/tmp/toon-spec/tests/fixtures/encode/arrays-tabular.json",
+        try fixturePath(allocator, fixture_root, "encode/arrays-tabular.json"),
         &.{
             "encodes arrays of uniform objects in tabular format",
             "encodes null values in tabular format",
@@ -88,7 +95,7 @@ test "official fixtures subset" {
 
     try runEncodeFixtureFile(
         allocator,
-        "/tmp/toon-spec/tests/fixtures/encode/arrays-nested.json",
+        try fixturePath(allocator, fixture_root, "encode/arrays-nested.json"),
         &.{
             "encodes nested arrays of primitives",
             "quotes strings containing delimiters in nested arrays",
@@ -108,7 +115,7 @@ test "official fixtures subset" {
 
     try runEncodeFixtureFile(
         allocator,
-        "/tmp/toon-spec/tests/fixtures/encode/key-folding.json",
+        try fixturePath(allocator, fixture_root, "encode/key-folding.json"),
         &.{
             "encodes folded chain to primitive (safe mode)",
             "encodes folded chain with inline array",
@@ -128,7 +135,7 @@ test "official fixtures subset" {
 
     try runDecodeFixtureFile(
         allocator,
-        "/tmp/toon-spec/tests/fixtures/decode/primitives.json",
+        try fixturePath(allocator, fixture_root, "decode/primitives.json"),
         &.{
             "parses safe unquoted string",
             "parses empty quoted string",
@@ -145,7 +152,7 @@ test "official fixtures subset" {
 
     try runDecodeFixtureFile(
         allocator,
-        "/tmp/toon-spec/tests/fixtures/decode/arrays-tabular.json",
+        try fixturePath(allocator, fixture_root, "decode/arrays-tabular.json"),
         &.{
             "parses tabular arrays of uniform objects",
             "parses nulls and quoted values in tabular rows",
@@ -159,7 +166,7 @@ test "official fixtures subset" {
 
     try runDecodeFixtureFile(
         allocator,
-        "/tmp/toon-spec/tests/fixtures/decode/delimiters.json",
+        try fixturePath(allocator, fixture_root, "decode/delimiters.json"),
         &.{
             "parses primitive arrays with tab delimiter",
             "parses primitive arrays with pipe delimiter",
@@ -182,7 +189,7 @@ test "official fixtures subset" {
 
     try runDecodeFixtureFile(
         allocator,
-        "/tmp/toon-spec/tests/fixtures/decode/arrays-nested.json",
+        try fixturePath(allocator, fixture_root, "decode/arrays-nested.json"),
         &.{
             "parses list arrays for non-uniform objects",
             "parses list arrays with empty items",
@@ -211,7 +218,7 @@ test "official fixtures subset" {
 
     try runDecodeFixtureFile(
         allocator,
-        "/tmp/toon-spec/tests/fixtures/decode/root-form.json",
+        try fixturePath(allocator, fixture_root, "decode/root-form.json"),
         &.{
             "parses empty document as empty object",
         },
@@ -219,7 +226,7 @@ test "official fixtures subset" {
 
     try runDecodeFixtureFile(
         allocator,
-        "/tmp/toon-spec/tests/fixtures/decode/validation-errors.json",
+        try fixturePath(allocator, fixture_root, "decode/validation-errors.json"),
         &.{
             "throws on array length mismatch (inline primitives - too many)",
             "throws on array length mismatch (list format - too many)",
@@ -235,7 +242,7 @@ test "official fixtures subset" {
 
     try runDecodeFixtureFile(
         allocator,
-        "/tmp/toon-spec/tests/fixtures/decode/indentation-errors.json",
+        try fixturePath(allocator, fixture_root, "decode/indentation-errors.json"),
         &.{
             "throws on object field with non-multiple indentation (3 spaces with indent=2)",
             "throws on list item with non-multiple indentation (3 spaces with indent=2)",
@@ -256,7 +263,7 @@ test "official fixtures subset" {
 
     try runDecodeFixtureFile(
         allocator,
-        "/tmp/toon-spec/tests/fixtures/decode/blank-lines.json",
+        try fixturePath(allocator, fixture_root, "decode/blank-lines.json"),
         &.{
             "throws on blank line inside list array",
             "throws on blank line inside tabular array",
@@ -276,7 +283,7 @@ test "official fixtures subset" {
 
     try runDecodeFixtureFile(
         allocator,
-        "/tmp/toon-spec/tests/fixtures/decode/whitespace.json",
+        try fixturePath(allocator, fixture_root, "decode/whitespace.json"),
         &.{
             "tolerates spaces around commas in inline arrays",
             "tolerates spaces around pipes in inline arrays",
@@ -289,7 +296,7 @@ test "official fixtures subset" {
 
     try runDecodeFixtureFile(
         allocator,
-        "/tmp/toon-spec/tests/fixtures/decode/objects.json",
+        try fixturePath(allocator, fixture_root, "decode/objects.json"),
         &.{
             "parses objects with primitive values",
             "parses null values in objects",
@@ -315,7 +322,7 @@ test "official fixtures subset" {
 
     try runDecodeFixtureFile(
         allocator,
-        "/tmp/toon-spec/tests/fixtures/decode/numbers.json",
+        try fixturePath(allocator, fixture_root, "decode/numbers.json"),
         &.{
             "parses number with trailing zeros in fractional part",
             "parses negative number with positive exponent",
@@ -344,7 +351,7 @@ test "official fixtures subset" {
 
     try runDecodeFixtureFile(
         allocator,
-        "/tmp/toon-spec/tests/fixtures/decode/path-expansion.json",
+        try fixturePath(allocator, fixture_root, "decode/path-expansion.json"),
         &.{
             "expands dotted key to nested object in safe mode",
             "expands dotted key with inline array",
@@ -362,11 +369,34 @@ test "official fixtures subset" {
     );
 }
 
+fn resolveFixtureRoot(allocator: std.mem.Allocator) ![]u8 {
+    const env_path = std.process.getEnvVarOwned(allocator, "TOON_SPEC_ROOT") catch |err| switch (err) {
+        error.EnvironmentVariableNotFound => null,
+        else => return err,
+    };
+    if (env_path) |path| return path;
+
+    return allocator.dupe(u8, "/tmp/toon-spec/tests/fixtures");
+}
+
+fn fixtureRootExists(root: []const u8) !bool {
+    std.fs.cwd().access(root, .{}) catch |err| switch (err) {
+        error.FileNotFound => return false,
+        else => return err,
+    };
+    return true;
+}
+
+fn fixturePath(allocator: std.mem.Allocator, root: []const u8, relative: []const u8) ![]u8 {
+    return std.fs.path.join(allocator, &.{ root, relative });
+}
+
 fn runEncodeFixtureFile(
     allocator: std.mem.Allocator,
     path: []const u8,
     supported_names: []const []const u8,
 ) !void {
+    defer allocator.free(path);
     var parsed = try loadFixtureFile(allocator, path);
     defer parsed.deinit();
 
@@ -389,6 +419,7 @@ fn runDecodeFixtureFile(
     path: []const u8,
     supported_names: []const []const u8,
 ) !void {
+    defer allocator.free(path);
     var parsed = try loadFixtureFile(allocator, path);
     defer parsed.deinit();
 

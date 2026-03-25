@@ -13,10 +13,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Checkout TOON spec fixtures
+        uses: actions/checkout@v4
+        with:
+          repository: toon-format/spec
+          path: toon-spec
+
       - name: Setup Zig
         uses: mlugg/setup-zig@v2
         with:
           version: 0.15.2
 
       - name: Run tests
+        env:
+          TOON_SPEC_ROOT: ${{ github.workspace }}/toon-spec/tests/fixtures
         run: zig build test
